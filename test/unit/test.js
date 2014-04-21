@@ -1,13 +1,14 @@
 (function(){
   var defineFunc = function(name, deps, callback, moduleObj) {
-    /**    
-    * @param {string=} name the module name
-    * @param {array=} deps the dependent modules
-    * @param {function=} callback the callback function to be called when the module is loaded
-    * @param {object=} moduleObj a plan object for the module
-    *
-    */
-    eval(docargs(arguments));
+    eval(docargs(arguments,
+      "/** "+
+      "* @param {string=} name the module name "+
+      "* @param {array=} deps the dependent modules "+
+      "* @param {function=} callback the callback function to be called when the module is loaded "+
+      "* @param {object=} moduleObj a plan object for the module "+
+      "* "+
+      "*/"));
+    
     assertHelper(name, deps, callback, moduleObj);
   };
 

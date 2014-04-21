@@ -23,8 +23,16 @@ Type.getType = function(arg) {
   if (toStr === "[object Object]") {
     return Type.TYPE_STRING;
   }
+
+  return undefined;
+};
+
+var OrType = function() {
+  this.types = [];
+};
+OrType.prototype.addType = function(type) {
+  this.types.push(type);  
 };
 
 return Type;
-
 });
