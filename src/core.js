@@ -1,13 +1,11 @@
-define([  
-], function() {
+define([
+  "./jsdoc/Param",
+  "./jsdoc/Type"
+], function(Param, Type) {
 
 var docargs;
 
 function getDoc() {
-
-}
-
-function parseDoc() {
 
 }
 
@@ -16,14 +14,18 @@ function parseParams(doc) {
   var index = doc.indexOf(token);
   var nextIndex;
   var paramString;
+  var params = [];
   while (index > 0) {
     nextIndex = doc.indexOf(token, index+token.length);
-    paramString = doc.substring(index, nextIndex>0?nextIndex:doc.length);    
+    paramString = doc.substring(index, nextIndex>0?nextIndex:doc.length); 
+    params.push(parseParam(paramString));
     index = nextIndex;
   }
+
+  return params;
 }
 
-function parseParamDeclaration(paramString) {
+function parseParam(paramString) {
   var typeStartIndex = paramString.indexOf("{");
   var typeEndIndexEnd = paramString.indexOf("}");
   var typeString = paramString.substring(typeStartIndex, typeEndIndexEnd + 1);
@@ -41,6 +43,8 @@ function parseParamDeclaration(paramString) {
 
     optional = true;
   }
+
+  var paramType = parseParamType(typeString);
 
   var restString = paramString.substr(typeEndIndexEnd + 1).trim();
   var paramNamePattern = /\w[\S]+/;  
@@ -66,7 +70,10 @@ function parseParamDeclaration(paramString) {
 
   if (!paramName) {
    throw new Error("Param name is missing."); 
-  }  
+  }
+
+  // param parsing is done, we got the information type, name, optional  
+  return new Param(paramType, paramName, optional);
 }
 
 function parseParamType(typeString) {
@@ -82,27 +89,30 @@ function parseParamType(typeString) {
     throw new Error("Syntax error, param type is missing.");
   }
 
-  var paramType;  
-  if (types.length === 1) {
-
-  } else {
-
-  }
-
-  return paramType;
+  return Type.createType(types);
 }
 
 docargs = {
   parse: function(args, doc) {  
+    var params = parseParams(doc);
+    
+    var argIndex = 0;
+    var paramIndex = 0;
+    
+    var stack = [];
+
+    var arg = args[argIndex];    
+
+    
+    while(params[paramIndex].match(arg)) {
+      paramIndex++;
+    }
+
+    
     var callee = args.callee;
     var callee.toString();
     console.log(args);
-
-    var nextToken = "@param";
-
-    var index = doc.indexOf(nextToken);
-
-
+    
     args[0] = "-1";
     args[1] = "createMap";
     args[2] = {};
