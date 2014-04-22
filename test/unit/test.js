@@ -1,6 +1,6 @@
-(function(){
+require(["docargs/docargs"], function(docargs){
   var defineFunc = function(name, deps, callback, moduleObj) {
-    eval(docargs(arguments,
+    eval(docargs.parse(arguments,
       "/** "+
       "* @param {string=} name the module name "+
       "* @param {array=} deps the dependent modules "+
@@ -37,17 +37,48 @@
   });
 
   test( "Call as define(callback)", function() {    
-  
+    assertHelper = function(name, deps, callback, moduleObj) {
+      ok(name === undefined);
+      ok(deps === undefined);
+      ok(callback === artifact_callback);
+      ok(moduleObj === undefined);
+    };
+    
+    defineFunc(artifact_callback);  
   });
 
-  test( "Call as define(moduleObj)", function() {    
+  test( "Call as define(moduleObj)", function() {
+    assertHelper = function(name, deps, callback, moduleObj) {
+      ok(name === undefined);
+      ok(deps === undefined);
+      ok(callback === undefined);
+      ok(moduleObj === artifact_moduleObj);
+    };
+    
+    defineFunc(artifact_moduleObj);    
   });
 
-  test( "Call as define(name, deps, callback)", function() {    
+  test( "Call as define(name, deps, callback)", function() {   
+    assertHelper = function(name, deps, callback, moduleObj) {
+      ok(name === artifact_name);
+      ok(deps === artifact_deps);
+      ok(callback === artifact_callback);
+      ok(moduleObj === undefined);
+    };
+    
+    defineFunc(artifact_name, artifact_deps, artifact_callback); 
   });
 
-  test( "Call as define(name, callback)", function() {    
+  test( "Call as define(name, callback)", function() {
+    assertHelper = function(name, deps, callback, moduleObj) {
+      ok(name === artifact_name);
+      ok(deps === undefined);
+      ok(callback === artifact_callback);
+      ok(moduleObj === undefined);
+    };
+    
+    defineFunc(artifact_name, artifact_callback);    
   });
 
-})();
+});
 

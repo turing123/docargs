@@ -1,7 +1,7 @@
 define([
   "./jsdoc/Param",
-  "./jsdoc/Type"
-], function(Param, Type) {
+  "./jsdoc/typeFactory"
+], function(Param, typeFactory) {
 
 var docargs;
 
@@ -79,55 +79,131 @@ function parseParam(paramString) {
 function parseParamType(typeString) {
   // trim { and }
   typeString = typeString.substring(1, typeString.length-1);
+  // replace the "optional" identifier
+  typeString = typeString.replace("=", "").trim();
   // replace the type "OR" operand with space
   typeString = typeString.replace("|", " ").trim();
   // replace multiple spaces with one spaces
-  typeString = typeString.replace.replace(/[\s]+/g, " ");
+  typeString = typeString.replace(/[\s]+/g, " ");
   var types = typeString.split(" ");
 
   if (!types || types.length === 0) {
     throw new Error("Syntax error, param type is missing.");
   }
 
-  return Type.createType(types);
+  return typeFactory.createType(types);
+}
+
+function getBestMatch(allMatches) {
+  // TODO 
+  // the best match should be decided by the priorities of 
+  // the possible function invocations declared in the JSDOC
+  return allMatches[0];
+}
+
+function convertMatch(params, args, match) {
+  var i;
+  var tempArgs = [];
+  var pair;
+  var paramIndex = 0;
+  var evalStr = "";
+
+  while(match.length > 0) {
+    pair = match.shift();
+    for (i=paramIndex; i<pair.paramIndex; i++) {
+      tempArgs[i] = undefined;
+    }
+
+    tempArgs[i] = args[pair.argIndex];
+    paramIndex = pair.paramIndex + 1;
+  }
+
+  for (i=paramIndex; i<params.length; i++) {
+    tempArgs[i] = undefined;
+  }
+  
+  args.length = tempArgs.length;
+  for (i=0; i<tempArgs.length; i++) {
+    args[i] = tempArgs[i];
+    evalStr += params[i].name+"=arguments["+i+"];"
+  }
+
+  return evalStr;
 }
 
 docargs = {
   parse: function(args, doc) {  
+    // alert("parsing...");
     var params = parseParams(doc);
     
     var argIndex = 0;
     var paramIndex = 0;
     
     var stack = [];
+    var allMatches = [];
 
-    var arg = args[argIndex];    
+    var arg, param, argMatched, preArg, i, foundMatch;
 
-    
-    while(params[paramIndex].match(arg)) {
-      paramIndex++;
+    // do depth-first searching to find out all the possible matches
+    do {
+      arg = args[argIndex];
+      argMatched = false;
+
+      if (paramIndex < params.length) {
+        param = params[paramIndex];
+        if (param.match(arg)) {
+          argMatched = true;
+        }else if (param.isOptional()) {
+          do {
+            paramIndex++;
+            param = params[paramIndex];
+          } while(paramIndex<params.length && !param.match(arg));
+          if (paramIndex < params.length) {
+            argMatched = true;
+          }
+        }
+      }
+
+      if (argMatched) {
+        stack.push({
+          argIndex: argIndex,
+          paramIndex: paramIndex
+        });
+
+        if (argIndex === args.length-1) {
+          // we found one OK match
+          foundMatch = [];
+          for (i=0; i<stack.length; i++) {
+            foundMatch.push(stack[i]);
+          }
+          allMatches.push(foundMatch);
+
+          // retrospect to previous arg
+          preArg = stack.pop();
+          argIndex = preArg.argIndex;
+          paramIndex = preArg.paramIndex + 1;
+        } else {
+          // go to next arg
+          argIndex ++;
+          paramIndex ++;
+        }
+      } else if (stack.length > 0) {
+        // retrospect to previous arg
+        preArg = stack.pop();
+        argIndex = preArg.argIndex;
+        paramIndex = preArg.paramIndex + 1;
+      } else {
+        // searching finished!
+        break;
+      }
+    } while(true);
+
+    if (allMatches.length === 0) {
+      throw new Error("Invalid arguments.");
     }
 
-    
-    var callee = args.callee;
-    var callee.toString();
-    console.log(args);
-    
-    args[0] = "-1";
-    args[1] = "createMap";
-    args[2] = {};
-    args[3] = function() {
-      console.log("I am callback function.");
-    };
-    args[4] = function() {
-      console.log("I am targetClass function.");
-    };
-
-    return "coreObjId = arguments[0];" +
-      "methodName = arguments[1];" +
-      "argJsonObj = arguments[2];" +
-      "callback = arguments[3];" +
-      "targetClass = arguments[4];";
+    var bestMatch = getBestMatch(allMatches);
+    return convertMatch(params, args, bestMatch);
   }
 };
 

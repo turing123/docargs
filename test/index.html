@@ -7,6 +7,14 @@
 <body>
   <div id="qunit"></div>
   <div id="qunit-fixture"></div>
+  <script src="libs/require.js"></script>
+  <script>
+	require.config({
+	    paths: {
+	        "docargs": "../src"
+	    }
+	 });
+  </script>
   <script src="libs/qunit.js"></script>
   <script src="unit/test.js"></script>
 </body>
