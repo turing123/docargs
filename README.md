@@ -1,4 +1,4 @@
-[DocArgs] - Parse JavaScript function arguments simple and smart
+DocArgs - Parse JavaScript function arguments simple and smart
 ================================================================
 
 DocArgs means "you write the DOCuments, and i parse the ARGumentS".
@@ -13,7 +13,7 @@ Example
 -------
 
 Take the `define` function of RequireJS as an example.
-
+You declare the function and use "docargs" this way:
 ```js
 var docargs = require("docargs/docargs");
 
@@ -48,7 +48,7 @@ callback=function(){
 }
 moduleObj=undefined
 ```
-if you call
+If you call
 ```js
 define({
 	a: 1,
@@ -62,5 +62,11 @@ deps=undefined
 callback=undefined
 moduleObj={"a":1,"b":2}
 ```
+
+Running the Unit Tests
+--------------------------------------
+Configure your HTTP server to host the docargs repository directory,
+then open the URL of the unit testing page(e.g. http://localhost/docargs/test/index.html)
+in your browser.
 
 
