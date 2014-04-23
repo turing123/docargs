@@ -5,8 +5,16 @@ define([
 
 var docargs;
 
-function getDoc() {
-
+function getDoc(args) {
+  var callee = args.callee;
+  var calleeFuncStr = callee.toString();
+  // the js doc identifier: /** .... */
+  var jsDocPattern = /\/\*\*[\s\S]*\*\//;
+  var match = calleeFuncStr.match(jsDocPattern);
+  if (!match || match.length === 0) {
+    throw new Error("JSDoc information not found.");
+  }
+  return match[0];
 }
 
 function parseParams(doc) {  
@@ -133,7 +141,10 @@ function convertMatch(params, args, match) {
 
 docargs = {
   parse: function(args, doc) {  
-    // alert("parsing...");
+    if (!doc) {
+      doc = getDoc(args);
+    }
+    
     var params = parseParams(doc);
     
     var argIndex = 0;

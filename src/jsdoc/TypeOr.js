@@ -12,7 +12,7 @@ var TypeOr = function(types) {
 TypeOr.prototype = new Type();
 
 TypeOr.prototype.add = function(type) {
-  this.types.add(type);
+  this.types.push(type);
 };
 
 TypeOr.prototype.match = function(arg) {
@@ -21,9 +21,8 @@ TypeOr.prototype.match = function(arg) {
     if (this.types[i].match(arg)) {
       return true;
     }
-
-    return false;
   }
+  return false;
 };
 
 return TypeOr;
