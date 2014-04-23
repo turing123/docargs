@@ -3,7 +3,7 @@ require(["docargs/docargs"], function(docargs){
     eval(docargs.parse(arguments,
       "/** "+
       "* @param {number} start The position where to start the extraction "+
-      "* @param {number=} length The number of characters to extract "+
+      "* @param {number} [length] The number of characters to extract "+
       "* "+
       "*/"));
     
@@ -17,6 +17,7 @@ require(["docargs/docargs"], function(docargs){
   var artifact_start = 1;
   var artifact_length = 23;
 
+  module("String substr function");
   test( "Call as substr(start, length)", function() {
     assertHelper = function(start, length) {
       ok(start === artifact_start);

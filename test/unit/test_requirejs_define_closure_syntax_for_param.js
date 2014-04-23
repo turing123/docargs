@@ -2,10 +2,10 @@ require(["docargs/docargs"], function(docargs){
   var defineFunc = function(name, deps, callback, moduleObj) {
     eval(docargs.parse(arguments,
       "/** "+
-      "* @param {string} [name] the module name "+
-      "* @param {array} [deps] the dependent modules "+
-      "* @param {function} [callback] the callback function to be called when the module is loaded "+
-      "* @param {object} [moduleObj] a plan object for the module "+
+      "* @param {string=} name the module name "+
+      "* @param {array=} deps the dependent modules "+
+      "* @param {function=} callback the callback function to be called when the module is loaded "+
+      "* @param {object=} moduleObj a plan object for the module "+
       "* "+
       "*/"));
     
@@ -25,7 +25,7 @@ require(["docargs/docargs"], function(docargs){
     s: "hello"
   };
 
-  module("RequireJS define function");
+  module("RequireJS define function (using Google closure doc syntax)");
   test( "Call as define(deps, callback)", function() {
     assertHelper = function(name, deps, callback, moduleObj) {
       ok(name === undefined);
