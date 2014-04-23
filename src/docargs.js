@@ -1,6 +1,6 @@
 define([
-	"./core",
-	"./exports/global"
+  "./core",
+  "./exports/global"
 ], function(docargs) {
 
 return docargs;
