@@ -80,5 +80,21 @@ require(["docargs/docargs"], function(docargs){
     defineFunc(artifact_name, artifact_callback);    
   });
 
+  test( "Invalid call as define(name, callback, deps)", function() {   
+    throws(
+      function() {
+        defineFunc(artifact_name, artifact_callback, artifact_deps);
+      }
+    );    
+  });
+
+  test( "Invalid call as define(123)", function() {
+    throws(
+      function() {
+        defineFunc(123);        
+      }
+    );
+  });
+
 });
 
