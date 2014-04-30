@@ -2,12 +2,14 @@ DocArgs - Parse JavaScript function arguments simple and smart
 ================================================================
 
 DocArgs means "you write the DOCuments, and i parse the ARGumentS".
+
 It is common that JavaScript functions have very dynamic argument 
 lists in which some arguments are optional, some are required, and
-some may allow multiple types. DocArgs works this way: you just write
-the standard JSDoc to describe the arguments, then call the simplest 
-and the least APIs to parse the arguments, and then use the arguments
-directly.
+some may allow multiple types. 
+
+DocArgs works this way: you just write the standard JSDoc to describe
+the arguments, then call the simplest and the least APIs to parse the 
+arguments, and then use the arguments directly.
 
 Examples
 -------
